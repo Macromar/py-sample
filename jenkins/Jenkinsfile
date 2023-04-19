@@ -14,13 +14,35 @@ pipeline {
         '''
     }
   }
+  parameters {
+        string(
+           name: "Branch_Name",
+           defaultValue: 'master',
+           description: '')
+           string(
+              name: "Image_Name",
+              defaultValue: 'py',
+              description: '')
+           string(
+              name: "Image_Tag",
+              defaultValue: 'latest',
+              description: 'Image tag')
+          booleanParam(
+             name: "PushImage",
+             defaultValue: false)
+      }
   stages {
-    stage('check python') {
+    stage('build image') {
       steps {
-        container('python') {
-          sh 'python --version'
-          sh 'pwd'
-          sh 'ls'
+            script {
+               echo "Bulding docker images"
+               def buildArgs = """\
+                -f Dockerfile \
+                ."""
+                docker.build(
+                   "${params.Image_Name}:${params.Image_Tag}",
+                   buildArgs)
+            }
         }
       }
     }
