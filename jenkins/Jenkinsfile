@@ -18,7 +18,7 @@ pipeline {
     stage('check python') {
       steps {
         container('python') {
-          sh 'python3 --version'
+          sh 'python --version'
           sh 'pwd'
         }
       }
