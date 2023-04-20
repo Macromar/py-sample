@@ -6,8 +6,16 @@ pipeline {
         kind: Pod
         spec:
           containers:
-          - name: python
-            image: python:2-alpine
+          - name: inbound-agent
+            image: jenkins/inbound-agent
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: dockersock
+          volumes:
+          - name: dockersock
+            hostPath:
+                path: /var/run/docker.sock
+
             command:
             - cat
             tty: true
@@ -35,16 +43,10 @@ pipeline {
     stage('build image') {
       steps {
             script {
-               echo "Bulding docker images"
-               def buildArgs = """\
-                -f Dockerfile \
-                ."""
-                docker.build(
-                   "${params.Image_Name}:${params.Image_Tag}",
-                   buildArgs)
+              echo "Bulding docker images"
+              sh 'docker ps'
             }
         }
       }
     }
-  }
 }
